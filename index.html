@@ -45,6 +45,24 @@
   <body class="bg-[#0f172a] text-slate-100 antialiased selection:bg-blue-600 selection:text-white min-h-screen">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!-- Fallback loader for direct GitHub Pages static hosting -->
+    <script type="module">
+      if (window.location.hostname.includes('github.io')) {
+        setTimeout(() => {
+          const rootEl = document.getElementById('root');
+          if (!rootEl || rootEl.children.length === 0) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = './assets/index-D3tSC7ew.css';
+            document.head.appendChild(link);
+
+            import('./assets/index-DTMckTCi.js').catch(function(err) {
+              console.error('Failed to load portfolio bundle', err);
+            });
+          }
+        }, 50);
+      }
+    </script>
   </body>
 </html>
 
