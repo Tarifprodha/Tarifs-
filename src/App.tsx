@@ -46,25 +46,38 @@ export default function App() {
   // Sync route with browser window pathname or hash
   useEffect(() => {
     const handleLocationChange = () => {
-      const path = window.location.pathname as PageRoute;
-      if (
-        path === '/about' ||
-        path === '/skills' ||
-        path === '/services' ||
-        path === '/projects' ||
-        path === '/case-studies' ||
-        path === '/case-studies/ai-automation' ||
-        path === '/certifications' ||
-        path === '/contact'
+      const path = window.location.pathname;
+      const hash = window.location.hash.replace(/^#\/?/, '');
+
+      if (path.endsWith('/case-studies/ai-automation') || hash === 'case-studies/ai-automation') {
+        setCurrentRoute('/case-studies/ai-automation');
+      } else if (
+        path.endsWith('/about') || hash === 'about' ||
+        path.endsWith('/skills') || hash === 'skills' ||
+        path.endsWith('/services') || hash === 'services' ||
+        path.endsWith('/projects') || hash === 'projects' ||
+        path.endsWith('/case-studies') || hash === 'case-studies' ||
+        path.endsWith('/certifications') || hash === 'certifications' ||
+        path.endsWith('/contact') || hash === 'contact'
       ) {
-        setCurrentRoute(path);
+        const matched = ['about', 'skills', 'services', 'projects', 'case-studies', 'certifications', 'contact'].find(
+          r => path.endsWith(`/${r}`) || hash === r
+        );
+        if (matched) {
+          setCurrentRoute(`/${matched}` as PageRoute);
+        }
       } else {
         setCurrentRoute('/');
       }
     };
 
+    handleLocationChange();
     window.addEventListener('popstate', handleLocationChange);
-    return () => window.removeEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
   }, []);
 
   const handleNavigate = (route: PageRoute) => {
